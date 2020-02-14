@@ -1,0 +1,23 @@
+<script>
+   function request (url) {
+        var xhrWorker = new Worker('getdata.worker.js')
+        xhrWorker.postMessage({ url })
+        xhrWorker.onmessage = ({ data: { data, err }}) => {
+            if (err) {
+                console.error(err)
+            } else {
+                var el = document.createElement('div')
+                el.innerHTML = data
+                document.body.appendChild(el)
+            }
+            xhrWorker.terminate()
+        }
+    }
+    if (window.Worker) {
+        console.log('support worker!')
+        request('./sample.json')
+        request('./notfound')
+    } else {
+        console.error('not support worker!')
+    }
+</script>
